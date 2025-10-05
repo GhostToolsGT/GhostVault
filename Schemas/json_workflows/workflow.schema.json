@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GhostCoachWorkflow",
+  "type": "object",
+  "required": [
+    "goal",
+    "assumptions",
+    "prerequisites",
+    "steps",
+    "done_checklist"
+  ],
+  "properties": {
+    "goal": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "detail",
+          "check",
+          "fallback"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "check": {
+            "type": "string"
+          },
+          "fallback": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "done_checklist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
