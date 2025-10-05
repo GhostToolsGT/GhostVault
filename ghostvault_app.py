@@ -1,27 +1,36 @@
-import subprocess
-import tkinter as tk
+import subprocess, sys, os, tkinter as tk
 from tkinter import messagebox
-import os
 import webbrowser
 
+def app_base_dir():
+    # In .exe: gebruik de map van de executable; in .py: de map van dit bestand
+    return os.path.dirname(sys.executable) if getattr(sys, "frozen", False) \
+           else os.path.dirname(os.path.abspath(__file__))
+
 def run_sync():
-    base_path = os.path.dirname(os.path.abspath(__file__))
+    base_path = app_base_dir()
     sync_script = os.path.join(base_path, "ghostvault_sync_full.bat")
-
-    # Run via cmd.exe en capture output
-    proc = subprocess.run(
-        ["cmd", "/c", sync_script],
-        capture_output=True, text=True
-    )
-
-    # Toon log (ook bij succes – lekker transparant)
+    # run in de app-map (waar Projects/ en Backups/ staan)
+    proc = subprocess.run(["cmd", "/c", sync_script],
+                          cwd=base_path, capture_output=True, text=True)
     log = proc.stdout + "\n" + proc.stderr
     show_log(log.strip())
-
     if proc.returncode == 0:
         messagebox.showinfo("GhostVault", "✅ Alles succesvol gesynchroniseerd met GitHub!")
     else:
         messagebox.showerror("GhostVault", "⚠️ Er ging iets mis bij het synchroniseren.\nCheck het logvenster.")
+
+def show_log(text):
+    win = tk.Toplevel(root); win.title("GhostVault – Sync log"); win.geometry("720x420")
+    box = tk.Text(win, wrap="word"); box.insert("1.0", text or "(geen output)")
+    box.config(state="disabled"); box.pack(fill="both", expand=True)
+
+def open_projects():
+    path = os.path.join(app_base_dir(), "Projects")
+    os.startfile(path) if os.path.isdir(path) else messagebox.showwarning("GhostVault","Map 'Projects' niet gevonden.")
+
+def open_repo():
+    webbrowser.open("https://github.com/GhostToolsGT/GhostVault")
 
 def show_log(text):
     log_win = tk.Toplevel(root)
