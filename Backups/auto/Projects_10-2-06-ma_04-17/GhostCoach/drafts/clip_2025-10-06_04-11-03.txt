@@ -1,0 +1,1 @@
+.\ghostvault_sync_full.bat
